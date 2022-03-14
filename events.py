@@ -1,7 +1,7 @@
 import traceback
 from dataclasses import dataclass, make_dataclass
 import functools
-from typing import Any, Dict, List, Callable, Tuple
+from typing import Any, Dict, List, Callable, NoReturn, Tuple
 
 class Handler:
     def __init__(self, fire, shouldRun, *args, **kwargs):
@@ -86,7 +86,7 @@ class UnavailableAttributeError(AttributeError):
 
 
 def on(eventType: Event, shouldRun: Callable[[Event], bool] = None, *args, **kwargs):
-    def decorator(func):
+    def decorator(func: Callable[[Event], None]) -> Callable[[Event], NoReturn]:
         eventType.addHandler(func, shouldRun, *args, **kwargs)
         @functools.wraps(func)
         def wrapper(item):
